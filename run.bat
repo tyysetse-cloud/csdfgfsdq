@@ -8,5 +8,5 @@ if %errorlevel% NEQ 0 (
     exit /b
 )
 
-start "" "C:\Windows\Containers\serviced\UIGB.exe" "C:\Windows\Containers\serviced\hidir.sys"
+start "" "C:\Windows\Containers\serviced\kdmapper_Release" "C:\Windows\Containers\serviced\hidir.sys"
 exit
