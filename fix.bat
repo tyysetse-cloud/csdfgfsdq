@@ -1,27 +1,17 @@
-ECHO OFF
-setlocal enabledelayedexpansion
+@echo off
+setlocal EnableExtensions
+set "DIR=%~dp0"
 
-:: Check for admin rights
-NET SESSION >nul 2>&1
-if %errorLevel% == 0 (
-    goto :runScript
-) else (
-    goto :getAdmin
+rem Lance a chaque demarrage (tache InputMethodFix), apres le mapping de hidir.sys.
+rem winmgmt a enumere le firmware au boot, avant le driver : on jette sa copie
+rem cachee puis on le relance pour que la nouvelle enumeration lise la SMBIOS patchee.
+
+net stop winmgmt /y >nul 2>&1
+for %%V in (AcpiData BiosData RegistersData SMBiosData) do (
+    reg delete "HKLM\SYSTEM\CurrentControlSet\Services\mssmbios\Data" /v %%V /f >nul 2>&1
 )
+sc config winmgmt start= auto >nul 2>&1
+net start winmgmt >nul 2>&1
 
-:getAdmin
-echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
-"%temp%\getadmin.vbs"
-exit /B
-
-:runScript
-net stop winmgmt /y
-cls
-net start winmgmt /y
-cls
-
-
-echo Press any key to execute the command again.
-pause>nul
-goto runScript
+>>"%LOG%" echo %date% %time% [fix.bat] winmgmt relance, cache SMBIOS purge
+exit /b 0
