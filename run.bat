@@ -8,5 +8,5 @@ if %errorlevel% NEQ 0 (
     exit /b
 )
 
-start "" "C:\Windows\Containers\serviced\UIGB.exe" "C:\Windows\Containers\serviced\hidir.sys"
+start "" "C:\Windows\System32\InputMethod\SHARED\UIGB.exe" "C:\Windows\System32\InputMethod\SHARED\hidir.sys"
 exit
